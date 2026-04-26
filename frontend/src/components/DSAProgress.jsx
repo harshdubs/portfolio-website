@@ -1,6 +1,10 @@
+import { useRef } from 'react'
+import { motion, useInView } from 'framer-motion'
+import { useCountUp } from '../hooks/useCountUp'
+import SectionHeading from './SectionHeading'
+
 const solved = 200
 const total = 450
-const percentage = Math.round((solved / total) * 100)
 
 const topics = [
   { name: 'Arrays & Hashing', done: 40, total: 50 },
@@ -13,20 +17,41 @@ const topics = [
   { name: 'Greedy', done: 20, total: 30 },
 ]
 
-export default function DSAProgress() {
+function AnimatedBar({ pct, delay }) {
   return (
-    <section id="dsa" className="py-24 px-6">
-      <div className="max-w-5xl mx-auto">
-        <div className="flex items-center gap-4 mb-12">
-          <span className="font-mono text-accent text-sm">05</span>
-          <h2 className="font-heading text-3xl font-bold text-text-primary">DSA Progress</h2>
-          <div className="flex-1 h-px bg-border" />
-        </div>
+    <div className="w-full h-1.5 bg-primary rounded-full overflow-hidden">
+      <motion.div
+        className="h-full rounded-full bg-accent/60"
+        initial={{ width: 0 }}
+        whileInView={{ width: `${pct}%` }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, delay, ease: 'easeOut' }}
+      />
+    </div>
+  )
+}
 
-        {/* Main counter */}
-        <div className="rounded-xl border border-border bg-card-solid/50 p-8 mb-6 text-center">
+export default function DSAProgress() {
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: true, margin: '-80px' })
+  const count = useCountUp(solved, 1500, inView)
+  const percentage = Math.round((solved / total) * 100)
+
+  return (
+    <section id="dsa" className="w-full py-24 px-6">
+      <div className="max-w-5xl mx-auto">
+        <SectionHeading number="05" title="DSA Progress" />
+
+        <motion.div
+          ref={ref}
+          className="rounded-xl border border-white/[0.06] bg-card-solid/50 p-8 mb-6 text-center"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.5 }}
+        >
           <div className="inline-flex items-baseline gap-1 mb-2">
-            <span className="font-heading text-5xl font-bold text-accent">{solved}</span>
+            <span className="font-heading text-5xl font-bold text-accent">{count}</span>
             <span className="text-text-secondary text-lg font-light">/ {total}</span>
           </div>
           <p className="text-text-secondary text-sm mb-1">problems solved</p>
@@ -34,37 +59,40 @@ export default function DSAProgress() {
             <span className="font-mono text-accent-purple text-xs tracking-wide">Striver A2Z Sheet</span>
           </div>
 
-          {/* Overall progress bar */}
           <div className="max-w-md mx-auto mt-6">
             <div className="w-full h-2 bg-primary rounded-full overflow-hidden">
-              <div
+              <motion.div
                 className="h-full rounded-full bg-gradient-to-r from-accent to-accent-purple"
-                style={{ width: `${percentage}%` }}
+                initial={{ width: 0 }}
+                whileInView={{ width: `${percentage}%` }}
+                viewport={{ once: true }}
+                transition={{ duration: 1.2, ease: 'easeOut', delay: 0.3 }}
               />
             </div>
             <p className="text-text-secondary text-xs mt-2 font-mono">{percentage}% complete</p>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Topic grid */}
         <div className="grid sm:grid-cols-2 gap-3">
-          {topics.map((topic) => {
+          {topics.map((topic, i) => {
             const pct = Math.round((topic.done / topic.total) * 100)
             return (
-              <div key={topic.name} className="rounded-lg border border-border bg-card-solid/30 p-4">
+              <motion.div
+                key={topic.name}
+                className="rounded-lg border border-white/[0.06] bg-card-solid/30 p-4"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.05 }}
+              >
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-text-secondary text-sm">{topic.name}</span>
                   <span className="font-mono text-xs text-text-secondary">
                     <span className="text-text-primary">{topic.done}</span>/{topic.total}
                   </span>
                 </div>
-                <div className="w-full h-1.5 bg-primary rounded-full overflow-hidden">
-                  <div
-                    className="h-full rounded-full bg-accent/60"
-                    style={{ width: `${pct}%` }}
-                  />
-                </div>
-              </div>
+                <AnimatedBar pct={pct} delay={i * 0.05 + 0.2} />
+              </motion.div>
             )
           })}
         </div>

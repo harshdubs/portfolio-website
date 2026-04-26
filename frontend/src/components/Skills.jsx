@@ -1,3 +1,6 @@
+import { motion } from 'framer-motion'
+import SectionHeading from './SectionHeading'
+
 const skillGroups = [
   {
     title: 'Programming & Backend',
@@ -23,19 +26,19 @@ const skillGroups = [
 
 export default function Skills() {
   return (
-    <section id="skills" className="py-24 px-6 bg-secondary/50">
+    <section id="skills" className="w-full py-24 px-6 bg-secondary/50">
       <div className="max-w-5xl mx-auto">
-        <div className="flex items-center gap-4 mb-12">
-          <span className="font-mono text-accent text-sm">02</span>
-          <h2 className="font-heading text-3xl font-bold text-text-primary">Skills</h2>
-          <div className="flex-1 h-px bg-border" />
-        </div>
+        <SectionHeading number="02" title="Skills" />
 
         <div className="grid sm:grid-cols-2 gap-5">
-          {skillGroups.map((group) => (
-            <div
+          {skillGroups.map((group, gi) => (
+            <motion.div
               key={group.title}
-              className="rounded-xl p-6 border border-border bg-card-solid/50 backdrop-blur-sm hover:border-border-hover transition-colors duration-300"
+              className="rounded-xl p-6 border border-white/[0.06] bg-card-solid/50 backdrop-blur-sm hover:border-accent/20 transition-colors duration-300"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-50px' }}
+              transition={{ duration: 0.5, delay: gi * 0.1 }}
             >
               <div className="flex items-center gap-3 mb-5">
                 <span className="text-lg">{group.icon}</span>
@@ -44,16 +47,20 @@ export default function Skills() {
                 </h3>
               </div>
               <div className="flex flex-wrap gap-2">
-                {group.skills.map((skill) => (
-                  <span
+                {group.skills.map((skill, si) => (
+                  <motion.span
                     key={skill}
-                    className="px-3 py-1.5 rounded-full text-xs font-medium border border-border text-text-secondary bg-primary/60 hover:border-accent/30 hover:text-accent transition-all duration-300 cursor-default"
+                    className="px-3 py-1.5 rounded-full text-xs font-medium border border-white/[0.06] text-text-secondary bg-primary/60 hover:border-accent/30 hover:text-accent transition-all duration-300 cursor-default"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.3, delay: gi * 0.1 + si * 0.05 }}
                   >
                     {skill}
-                  </span>
+                  </motion.span>
                 ))}
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
