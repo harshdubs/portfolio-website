@@ -5,37 +5,37 @@ import SectionHeading from './SectionHeading'
 const fallbackProjects = [
   {
     title: 'DataSense AI',
-    description: 'Upload CSVs and query data with natural language. Groq LLM interprets, analyzes, and visualizes — no code required.',
-    tech: ['Streamlit', 'Groq LLM', 'Python', 'Pandas'],
-    github: 'https://github.com/harshdubey',
-    live: '#',
+    description: 'Full-stack AI data analysis app — CSV upload, automated EDA, LLM-generated insights, multi-turn chat with memory, and dynamic chart generation. Deployed live on Streamlit Cloud.',
+    tech: ['Python', 'Streamlit', 'Groq LLM API', 'Pandas'],
+    github: 'https://github.com/harshdubs/datasense-ai',
+    live: 'https://datasense-ai-kzwea7rrhrxb88bqgxydxu.streamlit.app',
   },
   {
-    title: 'Predictive Maintenance',
-    description: 'ML pipeline detecting equipment failures before they happen. Isolation Forest anomaly detection with 98% recall on factory sensor data.',
-    tech: ['Python', 'Scikit-learn', 'Isolation Forest', 'Pandas'],
-    github: 'https://github.com/harshdubey',
+    title: 'Predictive Maintenance ML Pipeline',
+    description: 'Anomaly detection on industrial mixer motor sensors (temperature, vibration, current) using Isolation Forest on 34,560 readings — 98% recall, 100% precision flagging pre-failure patterns.',
+    tech: ['Python', 'Scikit-learn', 'Isolation Forest', 'SQL'],
+    github: 'https://github.com/harshdubs',
     live: null,
   },
   {
-    title: 'Factory Monitor',
-    description: 'Real-time factory floor monitoring — OPC-UA data collection, REST API, containerized deployment on edge servers.',
-    tech: ['FastAPI', 'OPC-UA', 'Docker', 'Python'],
-    github: 'https://github.com/harshdubey',
+    title: 'Manufacturing OEE Dashboard',
+    description: 'End-to-end pipeline: OPC-UA data ingestion → Python ETL → SQL window function analysis → Power BI dashboard tracking Availability, Performance, and Quality across 8 machines.',
+    tech: ['Python', 'SQL', 'Power BI', 'OPC-UA'],
+    github: 'https://github.com/harshdubs',
     live: null,
   },
   {
-    title: 'OEE Dashboard',
-    description: 'Overall Equipment Effectiveness analytics pulling production data, computing KPIs, visualizing trends for plant managers.',
-    tech: ['Python', 'SQL', 'Power BI', 'Pipelines'],
-    github: 'https://github.com/harshdubey',
+    title: 'Supply Chain Business Insights',
+    description: 'SQL analysis on 180K+ row DataCo dataset using CTEs, RANK, LAG, LEAD — uncovered a 70% revenue collapse over 4 months invisible to standard aggregation queries.',
+    tech: ['SQL Server', 'Python', 'Excel', 'Window Functions'],
+    github: 'https://github.com/harshdubs',
     live: null,
   },
   {
-    title: 'SQL Supply Chain Analytics',
-    description: 'Advanced analytics on 180K-row supply chain dataset — window functions, CTEs, complex aggregations for logistics optimization.',
-    tech: ['SQL', 'Window Functions', 'CTEs', 'PostgreSQL'],
-    github: 'https://github.com/harshdubey',
+    title: 'Statistical A/B Analysis',
+    description: "Welch's t-test on 180K orders analyzing discount impact on profit: p = 0.00001, H₀ rejected; Cohen's d = −0.048 — separating statistical significance from business significance.",
+    tech: ['Python', 'SciPy', 'Pandas', 'Hypothesis Testing'],
+    github: 'https://github.com/harshdubs',
     live: null,
   },
 ]
@@ -51,8 +51,8 @@ function TiltCard({ children, className }) {
     const y = e.clientY - rect.top
     const centerX = rect.width / 2
     const centerY = rect.height / 2
-    const rotateX = ((y - centerY) / centerY) * -4
-    const rotateY = ((x - centerX) / centerX) * 4
+    const rotateX = ((y - centerY) / centerY) * -3
+    const rotateY = ((x - centerX) / centerX) * 3
     card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-2px)`
   }
 
@@ -68,7 +68,7 @@ function TiltCard({ children, className }) {
       className={className}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      style={{ transition: 'transform 0.2s ease-out' }}
+      style={{ transition: 'transform 0.2s ease-out', willChange: 'transform' }}
     >
       {children}
     </div>
@@ -100,14 +100,11 @@ export default function Projects() {
               transition={{ duration: 0.5, delay: i * 0.1 }}
             >
               <TiltCard className="group relative rounded-xl p-6 border border-white/[0.06] bg-white/[0.02] backdrop-blur-md flex flex-col h-full hover:border-accent/20">
-                {/* Shimmer gradient */}
                 <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-accent/[0.03] via-transparent to-accent-purple/[0.03] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                 <div className="relative z-10 flex flex-col flex-grow">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-heading text-text-primary font-semibold text-lg">
-                      {project.title}
-                    </h3>
+                    <h3 className="font-heading text-text-primary font-semibold text-lg">{project.title}</h3>
                     <div className="flex gap-3">
                       {project.github && (
                         <a href={project.github} target="_blank" rel="noreferrer" className="text-text-secondary hover:text-accent transition-colors duration-300" aria-label="GitHub">

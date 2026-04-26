@@ -3,24 +3,34 @@ import SectionHeading from './SectionHeading'
 
 const skillGroups = [
   {
-    title: 'Programming & Backend',
+    title: 'Languages & Analysis',
     icon: '⚡',
-    skills: ['Python', 'FastAPI', 'Docker', 'Linux', 'Git', 'REST APIs'],
+    skills: ['Python', 'Pandas', 'NumPy', 'Scikit-learn', 'SQL', 'C++'],
   },
   {
-    title: 'Industrial IoT',
-    icon: '🏭',
-    skills: ['OPC-UA', 'SCADA', 'MQTT', 'PLC Integration', 'Ignition', 'Edge Computing'],
-  },
-  {
-    title: 'AI & Machine Learning',
+    title: 'Analytics & ML',
     icon: '🧠',
-    skills: ['LangChain', 'Groq', 'Streamlit', 'Scikit-learn', 'Pandas', 'NumPy'],
+    skills: ['EDA', 'Hypothesis Testing', 'A/B Testing', 'Regression', 'Isolation Forest', 'SPC', 'Root Cause Analysis'],
   },
   {
-    title: 'Data & Analytics',
+    title: 'Visualization & BI',
     icon: '📊',
-    skills: ['SQL', 'PostgreSQL', 'Power BI', 'Data Pipelines', 'ETL', 'Excel/VBA'],
+    skills: ['Power BI', 'DAX', 'Tableau', 'Matplotlib', 'Seaborn', 'Excel'],
+  },
+  {
+    title: 'Engineering & IoT',
+    icon: '🏭',
+    skills: ['ETL Pipelines', 'OPC-UA', 'Docker', 'Linux', 'REST APIs', 'ICONICS SCADA', 'DOPAC', 'Edge Computing'],
+  },
+  {
+    title: 'AI & App Dev',
+    icon: '🤖',
+    skills: ['Groq LLM API', 'Streamlit', 'FastAPI', 'LangChain', 'Git & GitHub'],
+  },
+  {
+    title: 'Industrial Tools',
+    icon: '🔧',
+    skills: ['SQL Server', 'STEP-7', 'TWINCAT-2', 'TIA Portal', 'PLC/IPC Systems', 'MQTT'],
   },
 ]
 
@@ -30,7 +40,7 @@ export default function Skills() {
       <div className="max-w-5xl mx-auto">
         <SectionHeading number="02" title="Skills" />
 
-        <div className="grid sm:grid-cols-2 gap-5">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {skillGroups.map((group, gi) => (
             <motion.div
               key={group.title}
@@ -38,7 +48,7 @@ export default function Skills() {
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-50px' }}
-              transition={{ duration: 0.5, delay: gi * 0.1 }}
+              transition={{ duration: 0.5, delay: gi * 0.08 }}
             >
               <div className="flex items-center gap-3 mb-5">
                 <span className="text-lg">{group.icon}</span>
@@ -54,7 +64,7 @@ export default function Skills() {
                     initial={{ opacity: 0, scale: 0.8 }}
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.3, delay: gi * 0.1 + si * 0.05 }}
+                    transition={{ duration: 0.3, delay: gi * 0.08 + si * 0.04 }}
                   >
                     {skill}
                   </motion.span>

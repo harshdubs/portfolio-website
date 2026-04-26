@@ -6,7 +6,7 @@ import SectionHeading from './SectionHeading'
 const statsData = [
   { value: 3, suffix: '+', label: 'Years Experience' },
   { value: 3, suffix: '', label: 'Countries' },
-  { value: 4, suffix: '', label: 'Live Projects' },
+  { value: 20, suffix: '+', label: 'Machines Monitored' },
   { value: 180, suffix: 'K+', label: 'Rows Analyzed' },
 ]
 
@@ -48,21 +48,23 @@ export default function About() {
           >
             <p>
               I&apos;m a Data &amp; IoT Engineer at
-              <span className="text-text-primary font-medium"> Continental Automotive India</span>,
-              where I architect real-time data pipelines, factory monitoring systems,
-              and production analytics for manufacturing floors.
+              <span className="text-text-primary font-medium"> Continental India Pvt. Ltd.</span>,
+              where I build end-to-end data pipelines, real-time analytics systems,
+              and KPI dashboards that drive operational decisions on the factory floor.
             </p>
             <p>
-              My stack centers on <span className="text-accent">Python</span>,{' '}
-              <span className="text-accent">FastAPI</span>,{' '}
-              <span className="text-accent">SQL</span>, and{' '}
-              <span className="text-accent">Docker</span> — I turn raw OPC-UA sensor
-              streams into dashboards that plant managers rely on daily.
+              My work bridges <span className="text-accent">shop-floor data and board-level insights</span> —
+              designing OPC-UA ingestion pipelines for 20+ industrial machines with 99.5% uptime,
+              engineering Python ETL workflows, and building ICONICS SCADA dashboards
+              adopted as primary monitoring tools by operations teams.
             </p>
             <p>
-              Currently transitioning into <span className="text-accent-purple font-medium">AI Engineering</span> —
-              building projects with LLMs, LangChain, and Streamlit while grinding
-              DSA fundamentals through the Striver A2Z sheet.
+              I&apos;ve represented Continental internationally across
+              <span className="text-accent-purple font-medium"> Germany</span>,{' '}
+              <span className="text-accent-purple font-medium">China</span>, and{' '}
+              <span className="text-accent-purple font-medium">Thailand</span> —
+              collaborating on edge technologies, containerisation, and dashboard deployments.
+              Currently expanding into AI/ML with production apps using LLM APIs and predictive models.
             </p>
           </motion.div>
 
@@ -80,11 +82,12 @@ export default function About() {
                   <div className="text-text-secondary/50 mb-2">// harsh.config</div>
                   <div><span className="text-accent-purple">const</span> <span className="text-accent">engineer</span> = {'{'}</div>
                   <div className="pl-4"><span className="text-text-secondary">role:</span> <span className="text-amber-400">&quot;Data &amp; IoT&quot;</span>,</div>
-                  <div className="pl-4"><span className="text-text-secondary">next:</span> <span className="text-amber-400">&quot;AI Engineer&quot;</span>,</div>
+                  <div className="pl-4"><span className="text-text-secondary">company:</span> <span className="text-amber-400">&quot;Continental&quot;</span>,</div>
                   <div className="pl-4"><span className="text-text-secondary">exp:</span> <span className="text-accent">3</span>,</div>
                   <div className="pl-4"><span className="text-text-secondary">stack:</span> [</div>
                   <div className="pl-8"><span className="text-amber-400">&quot;Python&quot;</span>,</div>
-                  <div className="pl-8"><span className="text-amber-400">&quot;FastAPI&quot;</span>,</div>
+                  <div className="pl-8"><span className="text-amber-400">&quot;SQL&quot;</span>,</div>
+                  <div className="pl-8"><span className="text-amber-400">&quot;Power BI&quot;</span>,</div>
                   <div className="pl-8"><span className="text-amber-400">&quot;Docker&quot;</span>,</div>
                   <div className="pl-4">],</div>
                   <div>{'}'}</div>

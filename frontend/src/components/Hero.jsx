@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion } from 'framer-motion'
 
-const titles = ['Data Engineer', 'IoT Engineer', 'AI Engineer']
+const titles = ['Data & IoT Engineer', 'Data Analyst', 'Software Developer']
 
 function ParticleCanvas() {
   const canvasRef = useRef(null)
@@ -11,34 +11,37 @@ function ParticleCanvas() {
     if (!canvas) return
     const ctx = canvas.getContext('2d')
     let animationId
-    let particles = []
+    let w, h
 
     const resize = () => {
-      canvas.width = canvas.offsetWidth * window.devicePixelRatio
-      canvas.height = canvas.offsetHeight * window.devicePixelRatio
-      ctx.scale(window.devicePixelRatio, window.devicePixelRatio)
+      const dpr = window.devicePixelRatio || 1
+      w = canvas.offsetWidth
+      h = canvas.offsetHeight
+      canvas.width = w * dpr
+      canvas.height = h * dpr
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
     }
     resize()
 
     const isMobile = window.innerWidth < 768
-    const count = isMobile ? 30 : 60
+    const count = isMobile ? 20 : 40
+    const particles = []
 
     for (let i = 0; i < count; i++) {
       particles.push({
-        x: Math.random() * canvas.offsetWidth,
-        y: Math.random() * canvas.offsetHeight,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.3,
-        r: Math.random() * 1.5 + 0.5,
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.25,
+        vy: (Math.random() - 0.5) * 0.25,
+        r: Math.random() * 1.2 + 0.5,
       })
     }
 
     const draw = () => {
-      ctx.clearRect(0, 0, canvas.offsetWidth, canvas.offsetHeight)
-      const w = canvas.offsetWidth
-      const h = canvas.offsetHeight
+      ctx.clearRect(0, 0, w, h)
 
-      particles.forEach((p) => {
+      for (let i = 0; i < count; i++) {
+        const p = particles[i]
         p.x += p.vx
         p.y += p.vy
         if (p.x < 0) p.x = w
@@ -48,22 +51,23 @@ function ParticleCanvas() {
 
         ctx.beginPath()
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2)
-        ctx.fillStyle = 'rgba(0, 255, 136, 0.15)'
+        ctx.fillStyle = 'rgba(0, 255, 136, 0.12)'
         ctx.fill()
-      })
+      }
 
-      // draw lines between close particles
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
+      // lines between close particles — limit checks for perf
+      ctx.lineWidth = 0.4
+      for (let i = 0; i < count; i++) {
+        for (let j = i + 1; j < count; j++) {
           const dx = particles[i].x - particles[j].x
           const dy = particles[i].y - particles[j].y
-          const dist = Math.sqrt(dx * dx + dy * dy)
-          if (dist < 120) {
+          const distSq = dx * dx + dy * dy
+          if (distSq < 14400) { // 120^2
+            const dist = Math.sqrt(distSq)
             ctx.beginPath()
             ctx.moveTo(particles[i].x, particles[i].y)
             ctx.lineTo(particles[j].x, particles[j].y)
-            ctx.strokeStyle = `rgba(0, 255, 136, ${0.04 * (1 - dist / 120)})`
-            ctx.lineWidth = 0.5
+            ctx.strokeStyle = `rgba(0, 255, 136, ${0.035 * (1 - dist / 120)})`
             ctx.stroke()
           }
         }
@@ -83,8 +87,7 @@ function ParticleCanvas() {
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 w-full h-full"
-      style={{ pointerEvents: 'none' }}
+      className="absolute inset-0 w-full h-full pointer-events-none"
     />
   )
 }
@@ -129,15 +132,14 @@ export default function Hero() {
     <section className="relative w-full min-h-screen flex items-center justify-center px-6 overflow-hidden">
       <ParticleCanvas />
 
-      {/* Noise texture overlay */}
+      {/* Noise texture */}
       <div
-        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        className="absolute inset-0 opacity-[0.025] pointer-events-none"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E")`,
         }}
       />
 
-      {/* Subtle radial glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-accent/[0.04] blur-[100px] pointer-events-none" />
 
       <div className="relative z-10 w-full max-w-3xl mx-auto text-center">
@@ -177,8 +179,9 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 2.2 }}
         >
-          3 years building industrial data systems at Continental.
-          Now engineering the shift to AI — one project at a time.
+          3 years at Continental India building production-grade data pipelines,
+          real-time analytics, and industrial IoT systems. Represented Continental
+          across Germany, China, and Thailand.
         </motion.p>
 
         <motion.div
