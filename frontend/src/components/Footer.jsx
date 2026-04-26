@@ -1,9 +1,12 @@
 export default function Footer() {
   return (
-    <footer className="py-6 px-4 border-t border-border text-center">
-      <p className="text-text-secondary text-sm">
-        Built by <span className="text-accent">Harsh Dubey</span> &mdash; 2025
-      </p>
+    <footer className="py-8 px-6 border-t border-border">
+      <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+        <p className="text-text-secondary text-xs">
+          Designed &amp; built by <span className="text-text-primary">Harsh Dubey</span>
+        </p>
+        <p className="font-mono text-text-secondary/40 text-[10px] tracking-wider">2025</p>
+      </div>
     </footer>
   )
 }
