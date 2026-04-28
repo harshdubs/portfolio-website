@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import TextScramble from './TextScramble'
 
 export default function SectionHeading({ number, title }) {
   return (
@@ -19,15 +20,18 @@ export default function SectionHeading({ number, title }) {
         viewport={{ once: true, margin: '-50px' }}
         transition={{ duration: 0.5, delay: 0.1 }}
       >
-        {title}
+        <TextScramble text={title} delay={0.3} speed={35} />
       </motion.h2>
       <motion.div
-        className="flex-1 h-px bg-border"
+        className="flex-1 h-px"
         initial={{ scaleX: 0 }}
         whileInView={{ scaleX: 1 }}
         viewport={{ once: true, margin: '-50px' }}
         transition={{ duration: 0.7, delay: 0.2 }}
-        style={{ originX: 0 }}
+        style={{
+          originX: 0,
+          background: 'linear-gradient(90deg, rgba(0,255,136,0.2), transparent)',
+        }}
       />
     </div>
   )

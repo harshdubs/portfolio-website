@@ -12,34 +12,87 @@ import Footer from './components/Footer'
 import ScrollProgress from './components/ScrollProgress'
 import CursorGlow from './components/CursorGlow'
 
+function LoadingScreen() {
+  return (
+    <motion.div
+      className="fixed inset-0 z-[100] bg-primary flex items-center justify-center"
+      exit={{ y: '-100%' }}
+      transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
+    >
+      {/* Animated rings */}
+      <motion.div
+        className="absolute w-40 h-40 rounded-full border border-accent/20"
+        animate={{ scale: [1, 1.5, 1], opacity: [0.3, 0, 0.3] }}
+        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.div
+        className="absolute w-28 h-28 rounded-full border border-accent-purple/20"
+        animate={{ scale: [1, 1.4, 1], opacity: [0.3, 0, 0.3] }}
+        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
+      />
+      <motion.div
+        className="absolute w-20 h-20 rounded-full border border-accent/10"
+        animate={{ rotate: 360 }}
+        transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
+      />
+
+      <div className="relative flex items-center gap-0.5">
+        {/* H */}
+        <motion.span
+          className="font-heading text-4xl font-bold text-accent"
+          initial={{ opacity: 0, y: 30, rotateX: 90 }}
+          animate={{ opacity: 1, y: 0, rotateX: 0 }}
+          transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+        >
+          H
+        </motion.span>
+        {/* D */}
+        <motion.span
+          className="font-heading text-4xl font-bold text-accent"
+          initial={{ opacity: 0, y: 30, rotateX: 90 }}
+          animate={{ opacity: 1, y: 0, rotateX: 0 }}
+          transition={{ duration: 0.6, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+        >
+          D
+        </motion.span>
+        {/* Dot */}
+        <motion.span
+          className="font-heading text-4xl font-bold text-text-primary"
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4, delay: 0.5, type: 'spring', stiffness: 300 }}
+        >
+          .
+        </motion.span>
+      </div>
+
+      {/* Loading bar */}
+      <motion.div
+        className="absolute bottom-[40%] w-32 h-[2px] bg-white/5 rounded-full overflow-hidden"
+      >
+        <motion.div
+          className="h-full bg-accent rounded-full"
+          initial={{ width: '0%' }}
+          animate={{ width: '100%' }}
+          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+        />
+      </motion.div>
+    </motion.div>
+  )
+}
+
 function App() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1200)
+    const timer = setTimeout(() => setLoading(false), 1500)
     return () => clearTimeout(timer)
   }, [])
 
   return (
     <>
-      {/* Page load overlay */}
       <AnimatePresence>
-        {loading && (
-          <motion.div
-            className="fixed inset-0 z-[100] bg-primary flex items-center justify-center"
-            exit={{ y: '-100%' }}
-            transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
-          >
-            <motion.span
-              className="font-heading text-2xl font-bold text-accent"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3 }}
-            >
-              HD<span className="text-text-primary">.</span>
-            </motion.span>
-          </motion.div>
-        )}
+        {loading && <LoadingScreen />}
       </AnimatePresence>
 
       <ScrollProgress />
