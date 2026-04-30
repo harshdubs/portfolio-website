@@ -11,6 +11,9 @@ import Contact from './components/Contact'
 import Footer from './components/Footer'
 import ScrollProgress from './components/ScrollProgress'
 import CursorGlow from './components/CursorGlow'
+import CinematicSection from './components/CinematicSection'
+import SceneIndicator from './components/SceneIndicator'
+import SceneDivider from './components/SceneDivider'
 
 function LoadingScreen() {
   return (
@@ -89,6 +92,43 @@ function App() {
     return () => clearTimeout(timer)
   }, [])
 
+  // Auto-play cinematic scroll on first load — once per session.
+  useEffect(() => {
+    if (loading) return
+    if (sessionStorage.getItem('cinematicPlayed')) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    sessionStorage.setItem('cinematicPlayed', '1')
+
+    const sectionIds = ['about', 'skills', 'projects', 'experience', 'dsa', 'contact']
+    let cancelled = false
+    let timers = []
+
+    const cancel = () => {
+      cancelled = true
+      timers.forEach(clearTimeout)
+      window.removeEventListener('wheel', cancel)
+      window.removeEventListener('touchstart', cancel)
+      window.removeEventListener('keydown', cancel)
+    }
+    window.addEventListener('wheel', cancel, { passive: true })
+    window.addEventListener('touchstart', cancel, { passive: true })
+    window.addEventListener('keydown', cancel)
+
+    const start = 600
+    sectionIds.forEach((id, i) => {
+      timers.push(setTimeout(() => {
+        if (cancelled) return
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, start + i * 1400))
+    })
+    timers.push(setTimeout(() => {
+      if (cancelled) return
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }, start + sectionIds.length * 1400 + 800))
+
+    return cancel
+  }, [loading])
+
   return (
     <>
       <AnimatePresence>
@@ -97,17 +137,24 @@ function App() {
 
       <ScrollProgress />
       <CursorGlow />
+      <SceneIndicator />
 
       <div className="w-full min-h-screen bg-primary text-text-primary">
         <Navbar />
         <main className="w-full">
           <Hero />
-          <About />
-          <Skills />
-          <Projects />
-          <Experience />
-          <DSAProgress />
-          <Contact />
+          <SceneDivider label="Act I — Origin" />
+          <CinematicSection intensity={0.7}><About /></CinematicSection>
+          <SceneDivider label="Act II — Toolbox" />
+          <CinematicSection intensity={0.6} flip><Skills /></CinematicSection>
+          <SceneDivider label="Act III — Showreel" />
+          <CinematicSection intensity={0.5}><Projects /></CinematicSection>
+          <SceneDivider label="Act IV — Field Work" />
+          <CinematicSection intensity={0.6} flip><Experience /></CinematicSection>
+          <SceneDivider label="Act V — Practice" />
+          <CinematicSection intensity={0.7}><DSAProgress /></CinematicSection>
+          <SceneDivider label="Finale — Say Hello" />
+          <CinematicSection intensity={0.8} flip><Contact /></CinematicSection>
         </main>
         <Footer />
       </div>

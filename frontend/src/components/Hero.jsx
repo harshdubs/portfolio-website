@@ -165,7 +165,7 @@ export default function Hero() {
   const displayText = titles[titleIndex].substring(0, charIndex)
 
   return (
-    <section ref={sectionRef} className="relative w-full min-h-screen flex items-center justify-center px-6 overflow-hidden">
+    <section id="hero" ref={sectionRef} className="relative w-full min-h-screen flex items-center justify-center px-6 overflow-hidden">
       <ParticleCanvas />
       <FloatingShapes />
 
