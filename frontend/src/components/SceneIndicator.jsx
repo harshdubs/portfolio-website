@@ -7,7 +7,7 @@ const scenes = [
   { id: 'skills',    label: 'Toolbox' },
   { id: 'projects',  label: 'Projects' },
   { id: 'experience',label: 'Experience' },
-  { id: 'dsa',       label: 'DSA' },
+  { id: 'achievements', label: 'Achievements' },
   { id: 'contact',   label: 'Contact' },
 ]
 

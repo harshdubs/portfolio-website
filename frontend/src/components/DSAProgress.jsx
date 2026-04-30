@@ -37,7 +37,7 @@ const achievements = [
 
 export default function DSAProgress() {
   return (
-    <section id="dsa" className="w-full py-24 px-6">
+    <section id="achievements" className="w-full py-24 px-6">
       <div className="max-w-5xl mx-auto">
         <SectionHeading number="05" title="Achievements" />
 

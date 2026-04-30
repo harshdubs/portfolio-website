@@ -66,10 +66,10 @@ function BulletItem({ bullet, index }) {
       transition={{ duration: 0.4, delay: 0.05 + index * 0.04 }}
     >
       <motion.span
-        className="text-accent/60 mt-0.5 shrink-0 text-[10px]"
-        whileHover={{ scale: 1.5, color: '#00ff88' }}
+        className="text-accent/70 mt-1.5 shrink-0 text-[10px] leading-none"
+        whileHover={{ scale: 1.6, color: '#00ff88' }}
       >
-        &blacktriangleright;
+        {'▸'}
       </motion.span>
       <span className="group-hover/bullet:text-text-primary transition-colors duration-300">{bullet}</span>
     </motion.li>
