@@ -88,10 +88,10 @@ function BootBanner({ totalSkills, totalGroups }) {
         <span className="w-2.5 h-2.5 rounded-full bg-red-500/70" />
         <span className="w-2.5 h-2.5 rounded-full bg-amber-400/70" />
         <span className="w-2.5 h-2.5 rounded-full bg-accent/70" />
-        <span className="ml-3 font-mono text-[10px] text-text-secondary/70 tracking-wider">~/skills.exec</span>
-        <span className="ml-auto font-mono text-[10px] text-accent/70">● LIVE</span>
+        <span className="ml-3 font-mono text-[12px] text-text-secondary/70 tracking-wider">~/skills.exec</span>
+        <span className="ml-auto font-mono text-[12px] text-accent/70">● LIVE</span>
       </div>
-      <div className="px-5 py-4 font-mono text-xs text-text-secondary leading-relaxed">
+      <div className="px-5 py-4 font-mono text-sm text-text-secondary leading-relaxed">
         <div><span className="text-accent">$</span> ./load_stack.sh <span className="text-text-secondary/40">--verbose</span></div>
         {stage >= 1 && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
@@ -120,7 +120,7 @@ function BootBanner({ totalSkills, totalGroups }) {
 function SkillChip({ skill, accent, gi, si }) {
   return (
     <motion.span
-      className="relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-white/[0.06] text-text-secondary bg-primary/40 cursor-default overflow-hidden group/chip"
+      className="relative inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-[13px] font-medium border border-white/[0.06] text-text-secondary bg-primary/40 cursor-default overflow-hidden group/chip"
       initial={{ opacity: 0, y: 14, scale: 0.85 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: '-10%' }}
@@ -246,7 +246,7 @@ function CategoryCard({ group, gi }) {
           </motion.div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <span className="font-mono text-[9px] tracking-[0.3em] uppercase" style={{ color: group.accent }}>
+              <span className="font-mono text-[11px] tracking-[0.3em] uppercase" style={{ color: group.accent }}>
                 {group.code}·{String(gi + 1).padStart(2, '0')}
               </span>
               <motion.span
@@ -260,11 +260,11 @@ function CategoryCard({ group, gi }) {
                   background: `linear-gradient(90deg, ${group.accent}99, transparent)`,
                 }}
               />
-              <span className="font-mono text-[10px] text-text-secondary/60">
+              <span className="font-mono text-[12px] text-text-secondary/60">
                 {String(group.skills.length).padStart(2, '0')}
               </span>
             </div>
-            <h3 className="font-heading text-text-primary font-semibold text-[15px] tracking-tight leading-tight mt-1 group-hover:text-text-primary transition-colors duration-300">
+            <h3 className="font-heading text-text-primary font-semibold text-[17px] tracking-tight leading-tight mt-1 group-hover:text-text-primary transition-colors duration-300">
               {group.title}
             </h3>
           </div>
@@ -304,7 +304,7 @@ function SkillTicker({ skills }) {
   return (
     <div className="relative mt-12 overflow-hidden border-y border-white/[0.06] py-3 bg-black/30">
       <motion.div
-        className="flex gap-8 whitespace-nowrap font-mono text-[11px] tracking-[0.25em] uppercase text-text-secondary/50"
+        className="flex gap-8 whitespace-nowrap font-mono text-[13px] tracking-[0.25em] uppercase text-text-secondary/55"
         animate={{ x: ['0%', '-50%'] }}
         transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
       >
