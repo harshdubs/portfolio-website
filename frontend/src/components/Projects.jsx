@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion'
+import { motion, useScroll, useTransform, useMotionValue, useSpring, useReducedMotion } from 'framer-motion'
 import SectionHeading from './SectionHeading'
 
 const fallbackProjects = [
@@ -79,6 +79,7 @@ function FeaturedProject({ project }) {
   })
   const yLayer1 = useTransform(scrollYProgress, [0, 1], ['-15%', '15%'])
   const yLayer2 = useTransform(scrollYProgress, [0, 1], ['10%', '-10%'])
+  const primaryHref = project.github || project.live
 
   return (
     <motion.div
@@ -92,8 +93,11 @@ function FeaturedProject({ project }) {
       transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
       style={{ perspective: '1400px' }}
     >
-      <motion.div
-        className="relative overflow-hidden rounded-2xl border border-accent/20 bg-gradient-to-br from-secondary/80 via-secondary/40 to-secondary/80 backdrop-blur-md p-10 md:p-14 group"
+      <motion.a
+        href={primaryHref}
+        target="_blank"
+        rel="noreferrer"
+        className="relative overflow-hidden rounded-2xl border border-accent/20 bg-gradient-to-br from-secondary/80 via-secondary/40 to-secondary/80 backdrop-blur-md p-10 md:p-14 group block no-underline cursor-pointer"
         style={{ rotateX: rX, rotateY: rY, transformStyle: 'preserve-3d' }}
       >
         {/* animated gradient blobs */}
@@ -166,18 +170,25 @@ function FeaturedProject({ project }) {
                 </motion.span>
               ))}
             </div>
-            <div className="flex gap-4">
+            <div className="flex gap-3 flex-wrap">
               {project.github && (
-                <a href={project.github} target="_blank" rel="noreferrer"
-                  className="group/btn inline-flex items-center gap-2 px-4 py-2 border border-accent/30 text-accent rounded-lg text-sm hover:bg-accent hover:text-primary transition-all">
+                <span className="inline-flex items-center gap-2 px-4 py-2 border border-accent/30 text-accent rounded-lg text-sm group-hover:bg-accent group-hover:text-primary transition-all duration-300">
                   <GithubIcon className="w-4 h-4" /> Source
-                </a>
+                  <span className="ml-1 group-hover:translate-x-1 transition-transform duration-300">→</span>
+                </span>
               )}
               {project.live && (
-                <a href={project.live} target="_blank" rel="noreferrer"
-                  className="group/btn inline-flex items-center gap-2 px-4 py-2 border border-accent-purple/40 text-accent-purple rounded-lg text-sm hover:bg-accent-purple hover:text-text-primary transition-all">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    window.open(project.live, '_blank', 'noreferrer')
+                  }}
+                  className="inline-flex items-center gap-2 px-4 py-2 border border-accent-purple/40 text-accent-purple rounded-lg text-sm hover:bg-accent-purple hover:text-text-primary transition-all"
+                >
                   <ExternalIcon className="w-4 h-4" /> Live Demo
-                </a>
+                </button>
               )}
             </div>
           </div>
@@ -199,64 +210,44 @@ function FeaturedProject({ project }) {
             </div>
           </motion.div>
         </div>
-      </motion.div>
+      </motion.a>
     </motion.div>
   )
 }
 
-/* ---------- Unfolding card — flips open from a hinge as it scrolls in ---------- */
+/* ---------- Unfolding card — flips open once, smoothly, then leaves alone ---------- */
 function UnfoldCard({ project, index }) {
-  const ref = useRef(null)
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['start 0.95', 'start 0.4'],
-  })
-  // Refold range
-  const { scrollYProgress: outProgress } = useScroll({
-    target: ref,
-    offset: ['end 0.6', 'end 0.1'],
-  })
-
+  const reduce = useReducedMotion()
   const flipFromLeft = index % 2 === 0
   const sign = flipFromLeft ? -1 : 1
-
-  const rotateY = useTransform(scrollYProgress, [0, 1], [sign * 95, 0])
-  const rotateYOut = useTransform(outProgress, [0, 1], [0, sign * -75])
-  const opacity = useTransform(scrollYProgress, [0, 0.6, 1], [0, 0.6, 1])
-  const z = useTransform(scrollYProgress, [0, 1], [-180, 0])
+  const primaryHref = project.github || project.live
 
   return (
     <motion.div
-      ref={ref}
-      style={{
-        perspective: '1400px',
-        transformStyle: 'preserve-3d',
-      }}
       className="relative"
+      style={{ perspective: '1400px' }}
+      initial={reduce ? { opacity: 0 } : { opacity: 0, rotateY: sign * 55, z: -120, y: 20 }}
+      whileInView={{ opacity: 1, rotateY: 0, z: 0, y: 0 }}
+      viewport={{ once: true, margin: '-15%' }}
+      transition={{
+        duration: 1,
+        ease: [0.22, 1, 0.36, 1],
+        delay: index * 0.05,
+      }}
     >
-      <motion.div
-        style={{
-          rotateY,
-          z,
-          opacity,
-          transformOrigin: flipFromLeft ? 'left center' : 'right center',
-          transformStyle: 'preserve-3d',
+      <motion.a
+        href={primaryHref}
+        target="_blank"
+        rel="noreferrer"
+        className="group relative block rounded-xl p-6 border border-white/[0.06] bg-white/[0.02] backdrop-blur-md flex flex-col h-full hover:border-accent/30 transition-colors duration-500 cursor-pointer no-underline"
+        style={{ transformOrigin: flipFromLeft ? 'left center' : 'right center' }}
+        whileHover={reduce ? {} : {
+          y: -8,
+          rotateX: 4,
+          scale: 1.02,
+          transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] },
         }}
       >
-        <motion.div
-          style={{
-            rotateY: rotateYOut,
-            transformOrigin: flipFromLeft ? 'left center' : 'right center',
-            transformStyle: 'preserve-3d',
-          }}
-          className="group relative rounded-xl p-6 border border-white/[0.06] bg-white/[0.02] backdrop-blur-md flex flex-col h-full hover:border-accent/30 transition-all duration-500"
-          whileHover={{
-            y: -8,
-            rotateX: 4,
-            scale: 1.02,
-            transition: { duration: 0.3 },
-          }}
-        >
           {/* ambient hover gradient */}
           <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-accent/[0.04] via-transparent to-accent-purple/[0.04] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
           {/* sweeping shimmer line on hover */}
@@ -288,16 +279,25 @@ function UnfoldCard({ project, index }) {
               <h3 className="font-heading text-text-primary font-semibold text-lg leading-snug group-hover:text-accent transition-colors duration-300">
                 {project.title}
               </h3>
-              <div className="flex gap-3 mt-1 shrink-0">
+              <div className="flex gap-3 mt-1 shrink-0 items-center">
                 {project.github && (
-                  <a href={project.github} target="_blank" rel="noreferrer" className="text-text-secondary hover:text-accent hover:scale-125 transform transition-all duration-300" aria-label="GitHub">
+                  <span className="text-text-secondary group-hover:text-accent transition-colors duration-300" aria-hidden>
                     <GithubIcon className="w-4 h-4" />
-                  </a>
+                  </span>
                 )}
                 {project.live && (
-                  <a href={project.live} target="_blank" rel="noreferrer" className="text-text-secondary hover:text-accent-purple hover:scale-125 transform transition-all duration-300" aria-label="Live demo">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      window.open(project.live, '_blank', 'noreferrer')
+                    }}
+                    className="text-text-secondary hover:text-accent-purple hover:scale-125 transform transition-all duration-300"
+                    aria-label="Live demo"
+                  >
                     <ExternalIcon className="w-4 h-4" />
-                  </a>
+                  </button>
                 )}
               </div>
             </div>
@@ -312,8 +312,7 @@ function UnfoldCard({ project, index }) {
               ))}
             </div>
           </div>
-        </motion.div>
-      </motion.div>
+      </motion.a>
     </motion.div>
   )
 }

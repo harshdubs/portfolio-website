@@ -29,7 +29,7 @@ export default function Footer() {
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          2025
+          {new Date().getFullYear()}
         </motion.p>
       </div>
     </motion.footer>

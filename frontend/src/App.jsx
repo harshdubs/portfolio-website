@@ -151,17 +151,17 @@ function App() {
         <Navbar />
         <main className="w-full">
           <Hero />
-          <SceneDivider label="Act I — Origin" />
+          <SceneDivider label="Origin" take="01" />
           <CinematicSection intensity={0.7}><About /></CinematicSection>
-          <SceneDivider label="Act II — Toolbox" />
+          <SceneDivider label="Toolbox" take="02" />
           <CinematicSection intensity={0.6} flip><Skills /></CinematicSection>
-          <SceneDivider label="Act III — Showreel" />
+          <SceneDivider label="Showreel" take="03" />
           <CinematicSection intensity={0.5}><Projects /></CinematicSection>
-          <SceneDivider label="Act IV — Field Work" />
+          <SceneDivider label="Field Work" take="04" />
           <CinematicSection intensity={0.6} flip><Experience /></CinematicSection>
-          <SceneDivider label="Act V — Practice" />
+          <SceneDivider label="Trophies" take="05" />
           <CinematicSection intensity={0.7}><DSAProgress /></CinematicSection>
-          <SceneDivider label="Finale — Say Hello" />
+          <SceneDivider label="Say Hello" take="06" />
           <CinematicSection intensity={0.8} flip><Contact /></CinematicSection>
         </main>
         <Footer />

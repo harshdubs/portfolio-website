@@ -44,7 +44,7 @@ const timeline = [
     type: 'international',
     title: 'ICONICS Dashboard Development Workshop',
     org: 'Rayong, Thailand',
-    period: '2024',
+    period: '2025',
     description: 'End-to-end ICONICS dashboard development and deployment at Thai manufacturing facility — on-site training, configuration, and go-live support.',
     flag: '\u{1F1F9}\u{1F1ED}',
   },
