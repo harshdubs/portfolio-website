@@ -98,7 +98,7 @@ function CodeBlock() {
 
 export default function About() {
   return (
-    <section id="about" className="w-full py-16 md:py-24 px-4 sm:px-6 lg:px-8">
+    <section id="about" className="relative w-full py-16 md:py-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
       <div className="max-w-5xl mx-auto">
         <SectionHeading number="01" title="About" />
 
