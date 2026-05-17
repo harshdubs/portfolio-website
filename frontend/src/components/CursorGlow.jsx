@@ -38,7 +38,7 @@ export default function CursorGlow() {
   const stateRef = useRef('default')
 
   useEffect(() => {
-    const isTouchDevice = 'ontouchstart' in window
+    const isTouchDevice = 'ontouchstart' in window || window.matchMedia('(hover: none)').matches || window.innerWidth < 768
     if (isTouchDevice) return
 
     let x = -400

@@ -1,9 +1,15 @@
 import { useRef, useState } from 'react'
 import { motion } from 'framer-motion'
+import { useIsMobile } from '../hooks/useIsMobile'
 
 export default function MagneticButton({ children, className = '', strength = 0.3, ...props }) {
   const ref = useRef(null)
   const [pos, setPos] = useState({ x: 0, y: 0 })
+  const isMobile = useIsMobile()
+
+  if (isMobile) {
+    return <div className={`inline-block ${className}`} {...props}>{children}</div>
+  }
 
   const handleMouseMove = (e) => {
     const rect = ref.current.getBoundingClientRect()

@@ -62,7 +62,7 @@ function CodeBlock() {
   return (
     <div ref={ref} className="relative">
       <GlowCard className="rounded-xl" glowColor="rgba(124,58,237,0.12)">
-        <div className="w-64 h-64 rounded-xl bg-card-solid border border-white/[0.06] overflow-hidden relative">
+        <div className="w-full max-w-[16rem] sm:w-64 h-64 rounded-xl bg-card-solid border border-white/[0.06] overflow-hidden relative">
           <div className="absolute inset-0 bg-gradient-to-br from-accent/[0.05] to-accent-purple/[0.05]" />
           {/* Terminal dots */}
           <div className="flex gap-1.5 p-3 relative z-10">
@@ -98,12 +98,12 @@ function CodeBlock() {
 
 export default function About() {
   return (
-    <section id="about" className="w-full py-24 px-6">
+    <section id="about" className="w-full py-16 md:py-24 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto">
         <SectionHeading number="01" title="About" />
 
-        <div className="grid lg:grid-cols-5 gap-12 items-start">
-          <div className="lg:col-span-3 space-y-5 text-text-secondary leading-relaxed text-[15px]">
+        <div className="grid lg:grid-cols-5 gap-8 md:gap-12 items-start">
+          <div className="lg:col-span-3 space-y-5 text-text-secondary leading-relaxed text-[14px] sm:text-[15px] break-words">
             <TextReveal delay={0}>
               <p>
                 I&apos;m a Data &amp; IoT Engineer at

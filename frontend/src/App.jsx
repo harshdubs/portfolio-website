@@ -14,7 +14,7 @@ import CursorGlow from './components/CursorGlow'
 import CinematicSection from './components/CinematicSection'
 import SceneIndicator from './components/SceneIndicator'
 import SceneDivider from './components/SceneDivider'
-import Letterbox from './components/Letterbox'
+import MobileTabBar from './components/MobileTabBar'
 
 function LoadingScreen() {
   return (
@@ -87,54 +87,11 @@ function LoadingScreen() {
 
 function App() {
   const [loading, setLoading] = useState(true)
-  const [autoPlaying, setAutoPlaying] = useState(false)
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1500)
+    const timer = setTimeout(() => setLoading(false), 900)
     return () => clearTimeout(timer)
   }, [])
-
-  // Auto-play cinematic scroll on first load — once per session.
-  useEffect(() => {
-    if (loading) return
-    if (sessionStorage.getItem('cinematicPlayed')) return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    sessionStorage.setItem('cinematicPlayed', '1')
-
-    const sectionIds = ['about', 'skills', 'projects', 'experience', 'achievements', 'contact']
-    let cancelled = false
-    const timers = []
-
-    const cancel = () => {
-      if (cancelled) return
-      cancelled = true
-      timers.forEach(clearTimeout)
-      setAutoPlaying(false)
-      window.removeEventListener('wheel', cancel)
-      window.removeEventListener('touchstart', cancel)
-      window.removeEventListener('keydown', cancel)
-    }
-    window.addEventListener('wheel', cancel, { passive: true })
-    window.addEventListener('touchstart', cancel, { passive: true })
-    window.addEventListener('keydown', cancel)
-
-    const start = 700
-    const step = 1700 // longer breathing room so animations are seen
-    timers.push(setTimeout(() => { if (!cancelled) setAutoPlaying(true) }, 200))
-    sectionIds.forEach((id, i) => {
-      timers.push(setTimeout(() => {
-        if (cancelled) return
-        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      }, start + i * step))
-    })
-    timers.push(setTimeout(() => {
-      if (cancelled) return
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    }, start + sectionIds.length * step + 1200))
-    timers.push(setTimeout(() => { if (!cancelled) setAutoPlaying(false) }, start + sectionIds.length * step + 2800))
-
-    return cancel
-  }, [loading])
 
   return (
     <>
@@ -145,7 +102,6 @@ function App() {
       <ScrollProgress />
       <CursorGlow />
       <SceneIndicator />
-      <Letterbox show={autoPlaying} label="cinematic intro" />
 
       <div className="w-full min-h-screen bg-primary text-text-primary">
         <Navbar />
@@ -165,7 +121,9 @@ function App() {
           <CinematicSection intensity={0.8} flip><Contact /></CinematicSection>
         </main>
         <Footer />
+        <div className="md:hidden h-20" aria-hidden />
       </div>
+      <MobileTabBar />
     </>
   )
 }

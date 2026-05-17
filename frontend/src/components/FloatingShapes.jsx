@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { useIsMobile } from '../hooks/useIsMobile'
 
 const shapes = [
   { size: 60, x: '10%', y: '20%', delay: 0, duration: 8, color: 'accent' },
@@ -10,6 +11,10 @@ const shapes = [
 ]
 
 export default function FloatingShapes() {
+  const isMobile = useIsMobile()
+  // Infinite framer-motion loops + the Hero particle canvas were starving the
+  // main thread on mobile, making every section below Hero feel sluggish.
+  if (isMobile) return null
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden">
       {shapes.map((s, i) => (

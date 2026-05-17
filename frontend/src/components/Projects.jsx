@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, useScroll, useTransform, useMotionValue, useSpring, useReducedMotion } from 'framer-motion'
 import SectionHeading from './SectionHeading'
+import { useIsMobile } from '../hooks/useIsMobile'
 
 const fallbackProjects = [
   {
@@ -57,8 +58,67 @@ const ExternalIcon = (props) => (
   <svg {...props} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
 )
 
+/* ---------- Featured project — MOBILE simplified ---------- */
+function FeaturedProjectMobile({ project }) {
+  const primaryHref = project.github || project.live
+  return (
+    <motion.div
+      className="relative mb-10"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-40px' }}
+      transition={{ duration: 0.4 }}
+    >
+      <a
+        href={primaryHref}
+        target="_blank"
+        rel="noreferrer"
+        className="relative overflow-hidden rounded-2xl border border-accent/20 bg-card-solid p-6 group block no-underline cursor-pointer"
+      >
+        {['top-3 left-3 border-t border-l', 'top-3 right-3 border-t border-r', 'bottom-3 left-3 border-b border-l', 'bottom-3 right-3 border-b border-r'].map((c) => (
+          <div key={c} className={`absolute w-6 h-6 ${c} border-accent/40 pointer-events-none`} />
+        ))}
+        <div className="relative z-10">
+          <span className="font-mono text-[10px] tracking-[0.3em] text-accent uppercase block mb-4">★ Featured Project</span>
+          <h3 className="font-heading text-2xl font-bold text-text-primary mb-4 leading-tight break-words">{project.title}</h3>
+          <p className="text-text-secondary text-sm leading-relaxed mb-6">{project.description}</p>
+          <div className="flex flex-wrap gap-x-4 gap-y-2 mb-6">
+            {project.tech.map((t) => (
+              <span key={t} className="font-mono text-accent/80 text-xs tracking-wide">{t}</span>
+            ))}
+          </div>
+          <div className="flex gap-3 flex-wrap mb-4">
+            {project.github && (
+              <span className="inline-flex items-center gap-2 px-4 py-2 border border-accent/30 text-accent rounded-lg text-sm">
+                <GithubIcon className="w-4 h-4" /> Source
+              </span>
+            )}
+            {project.live && (
+              <button
+                type="button"
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open(project.live, '_blank', 'noreferrer') }}
+                className="inline-flex items-center gap-2 px-4 py-2 border border-accent-purple/40 text-accent-purple rounded-lg text-sm"
+              >
+                <ExternalIcon className="w-4 h-4" /> Live Demo
+              </button>
+            )}
+          </div>
+          <div className="text-right">
+            <div className="font-heading font-bold text-4xl bg-gradient-to-br from-accent via-accent to-accent-purple bg-clip-text text-transparent leading-none">
+              {project.metric}
+            </div>
+            <div className="font-mono text-[10px] text-text-secondary uppercase tracking-widest mt-2 max-w-[14rem] ml-auto">
+              {project.metricLabel}
+            </div>
+          </div>
+        </div>
+      </a>
+    </motion.div>
+  )
+}
+
 /* ---------- Featured project — full-width cinematic hero card ---------- */
-function FeaturedProject({ project }) {
+function FeaturedProjectDesktop({ project }) {
   const ref = useRef(null)
   const mx = useMotionValue(0)
   const my = useMotionValue(0)
@@ -97,7 +157,7 @@ function FeaturedProject({ project }) {
         href={primaryHref}
         target="_blank"
         rel="noreferrer"
-        className="relative overflow-hidden rounded-2xl border border-accent/20 bg-gradient-to-br from-secondary/80 via-secondary/40 to-secondary/80 backdrop-blur-md p-10 md:p-14 group block no-underline cursor-pointer"
+        className="relative overflow-hidden rounded-2xl border border-accent/20 bg-gradient-to-br from-secondary/80 via-secondary/40 to-secondary/80 backdrop-blur-md p-6 sm:p-10 md:p-14 group block no-underline cursor-pointer"
         style={{ rotateX: rX, rotateY: rY, transformStyle: 'preserve-3d' }}
       >
         {/* animated gradient blobs */}
@@ -138,7 +198,7 @@ function FeaturedProject({ project }) {
             >
               ★ Featured Project
             </motion.span>
-            <h3 className="font-heading text-4xl md:text-5xl font-bold text-text-primary mb-4 leading-tight">
+            <h3 className="font-heading text-2xl sm:text-4xl md:text-5xl font-bold text-text-primary mb-4 leading-tight break-words">
               {project.title.split('').map((ch, i) => (
                 <motion.span
                   key={i}
@@ -153,7 +213,7 @@ function FeaturedProject({ project }) {
                 </motion.span>
               ))}
             </h3>
-            <p className="text-text-secondary text-base leading-relaxed max-w-2xl mb-6">
+            <p className="text-text-secondary text-sm sm:text-base leading-relaxed max-w-2xl mb-6">
               {project.description}
             </p>
             <div className="flex flex-wrap gap-x-4 gap-y-2 mb-6">
@@ -202,7 +262,7 @@ function FeaturedProject({ project }) {
             transition={{ delay: 0.6, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             style={{ transform: 'translateZ(60px)' }}
           >
-            <div className="font-heading font-bold text-6xl md:text-7xl bg-gradient-to-br from-accent via-accent to-accent-purple bg-clip-text text-transparent leading-none">
+            <div className="font-heading font-bold text-4xl sm:text-6xl md:text-7xl bg-gradient-to-br from-accent via-accent to-accent-purple bg-clip-text text-transparent leading-none">
               {project.metric}
             </div>
             <div className="font-mono text-[10px] text-text-secondary uppercase tracking-widest mt-2 max-w-[14rem] ml-auto">
@@ -218,6 +278,7 @@ function FeaturedProject({ project }) {
 /* ---------- Unfolding card — flips open once, smoothly, then leaves alone ---------- */
 function UnfoldCard({ project, index }) {
   const reduce = useReducedMotion()
+  const isMobile = useIsMobile()
   const flipFromLeft = index % 2 === 0
   const sign = flipFromLeft ? -1 : 1
   const primaryHref = project.github || project.live
@@ -225,23 +286,23 @@ function UnfoldCard({ project, index }) {
   return (
     <motion.div
       className="relative"
-      style={{ perspective: '1400px' }}
-      initial={reduce ? { opacity: 0 } : { opacity: 0, rotateY: sign * 55, z: -120, y: 20 }}
-      whileInView={{ opacity: 1, rotateY: 0, z: 0, y: 0 }}
+      style={isMobile ? undefined : { perspective: '1400px' }}
+      initial={reduce || isMobile ? { opacity: 0, y: 16 } : { opacity: 0, rotateY: sign * 55, z: -120, y: 20 }}
+      whileInView={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, rotateY: 0, z: 0, y: 0 }}
       viewport={{ once: true, margin: '-15%' }}
       transition={{
-        duration: 1,
+        duration: isMobile ? 0.3 : 1,
         ease: [0.22, 1, 0.36, 1],
-        delay: index * 0.05,
+        delay: index * (isMobile ? 0.04 : 0.05),
       }}
     >
       <motion.a
         href={primaryHref}
         target="_blank"
         rel="noreferrer"
-        className="group relative block rounded-xl p-6 border border-white/[0.06] bg-white/[0.02] backdrop-blur-md flex flex-col h-full hover:border-accent/30 transition-colors duration-500 cursor-pointer no-underline"
-        style={{ transformOrigin: flipFromLeft ? 'left center' : 'right center' }}
-        whileHover={reduce ? {} : {
+        className={`group relative block rounded-xl p-6 border border-white/[0.06] flex flex-col h-full hover:border-accent/30 transition-colors duration-500 cursor-pointer no-underline ${isMobile ? 'bg-card-solid' : 'bg-white/[0.02] backdrop-blur-md'}`}
+        style={isMobile ? undefined : { transformOrigin: flipFromLeft ? 'left center' : 'right center' }}
+        whileHover={reduce || isMobile ? {} : {
           y: -8,
           rotateX: 4,
           scale: 1.02,
@@ -249,15 +310,17 @@ function UnfoldCard({ project, index }) {
         }}
       >
           {/* ambient hover gradient */}
-          <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-accent/[0.04] via-transparent to-accent-purple/[0.04] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+          {!isMobile && <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-accent/[0.04] via-transparent to-accent-purple/[0.04] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />}
           {/* sweeping shimmer line on hover */}
-          <div className="absolute inset-0 rounded-xl overflow-hidden pointer-events-none">
-            <motion.div
-              className="absolute -inset-x-1 h-px bg-gradient-to-r from-transparent via-accent/60 to-transparent opacity-0 group-hover:opacity-100"
-              animate={{ y: ['-10%', '110%'] }}
-              transition={{ duration: 2.4, repeat: Infinity, ease: 'linear' }}
-            />
-          </div>
+          {!isMobile && (
+            <div className="absolute inset-0 rounded-xl overflow-hidden pointer-events-none">
+              <motion.div
+                className="absolute -inset-x-1 h-px bg-gradient-to-r from-transparent via-accent/60 to-transparent opacity-0 group-hover:opacity-100"
+                animate={{ y: ['-10%', '110%'] }}
+                transition={{ duration: 2.4, repeat: Infinity, ease: 'linear' }}
+              />
+            </div>
+          )}
 
           {/* index plate */}
           <div className="absolute top-4 right-5 font-mono text-[10px] text-text-secondary/40 tracking-widest">
@@ -317,7 +380,13 @@ function UnfoldCard({ project, index }) {
   )
 }
 
+function FeaturedProject(props) {
+  const isMobile = useIsMobile()
+  return isMobile ? <FeaturedProjectMobile {...props} /> : <FeaturedProjectDesktop {...props} />
+}
+
 export default function Projects() {
+  const isMobile = useIsMobile()
   const [projects, setProjects] = useState(fallbackProjects)
 
   useEffect(() => {
@@ -339,16 +408,18 @@ export default function Projects() {
   const [featured, ...rest] = projects
 
   return (
-    <section id="projects" className="relative w-full py-24 px-6 overflow-hidden">
-      {/* spotlight */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[800px] rounded-full bg-accent/[0.025] blur-[120px] pointer-events-none" />
+    <section id="projects" className="relative w-full py-16 md:py-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      {/* spotlight (desktop only — blur is too expensive on mobile) */}
+      {!isMobile && (
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[800px] rounded-full bg-accent/[0.025] blur-[120px] pointer-events-none" />
+      )}
 
       <div className="relative max-w-6xl mx-auto">
         <SectionHeading number="03" title="Projects" />
 
         {featured && <FeaturedProject project={featured} />}
 
-        <div className="grid md:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
           {rest.map((project, i) => (
             <UnfoldCard key={project.title} project={project} index={i + 1} />
           ))}

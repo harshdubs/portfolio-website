@@ -4,6 +4,9 @@ import { motion, AnimatePresence } from 'framer-motion'
  * Black cinematic bars top + bottom. Active when `show` is true.
  */
 export default function Letterbox({ show, label }) {
+  if (typeof window !== 'undefined' && (window.innerWidth < 768 || window.matchMedia('(hover: none)').matches)) {
+    return null
+  }
   return (
     <AnimatePresence>
       {show && (

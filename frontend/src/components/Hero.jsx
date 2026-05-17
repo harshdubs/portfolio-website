@@ -3,14 +3,20 @@ import { motion, useScroll, useTransform } from 'framer-motion'
 import FloatingShapes from './FloatingShapes'
 import MagneticButton from './MagneticButton'
 import { CharReveal } from './TextReveal'
+import { useIsMobile } from '../hooks/useIsMobile'
 
 const titles = ['Data & IoT Engineer', 'Data Analyst', 'Software Developer']
 
 function ParticleCanvas() {
   const canvasRef = useRef(null)
   const mouseRef = useRef({ x: -1000, y: -1000 })
+  const isMobile = useIsMobile()
 
   useEffect(() => {
+    // Skip entirely on mobile — an always-on rAF loop with O(n^2) line checks
+    // keeps running after Hero scrolls out of view and starves the main thread,
+    // making every section below it feel laggy.
+    if (isMobile) return
     const canvas = canvasRef.current
     if (!canvas) return
     const ctx = canvas.getContext('2d')
@@ -102,15 +108,27 @@ function ParticleCanvas() {
       animationId = requestAnimationFrame(draw)
     }
 
-    draw()
+    let visible = true
+    const io = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting
+      if (visible && !animationId) draw()
+      if (!visible && animationId) { cancelAnimationFrame(animationId); animationId = null }
+    }, { threshold: 0 })
+    io.observe(canvas)
+
+    const drawIfVisible = () => { if (visible) draw() }
+    drawIfVisible()
     window.addEventListener('resize', resize)
     window.addEventListener('mousemove', onMouse, { passive: true })
     return () => {
-      cancelAnimationFrame(animationId)
+      io.disconnect()
+      if (animationId) cancelAnimationFrame(animationId)
       window.removeEventListener('resize', resize)
       window.removeEventListener('mousemove', onMouse)
     }
-  }, [])
+  }, [isMobile])
+
+  if (isMobile) return null
 
   return (
     <canvas
@@ -165,7 +183,7 @@ export default function Hero() {
   const displayText = titles[titleIndex].substring(0, charIndex)
 
   return (
-    <section id="hero" ref={sectionRef} className="relative w-full min-h-screen flex items-center justify-center px-6 overflow-hidden">
+    <section id="hero" ref={sectionRef} className="relative w-full min-h-screen flex items-center justify-center px-4 sm:px-6 overflow-hidden">
       <ParticleCanvas />
       <FloatingShapes />
 
@@ -203,7 +221,7 @@ export default function Hero() {
         </motion.p>
 
         <motion.h1
-          className="font-heading text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-[1.1] mb-4"
+          className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] mb-4 break-words"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3, delay: 1.7 }}
@@ -222,14 +240,14 @@ export default function Hero() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 2.2 }}
         >
-          <span className="font-heading text-xl sm:text-2xl text-text-secondary">
+          <span className="font-heading text-lg sm:text-2xl text-text-secondary">
             {displayText}
           </span>
-          <span className="cursor-blink text-accent text-xl sm:text-2xl ml-0.5 font-light">|</span>
+          <span className="cursor-blink text-accent text-lg sm:text-2xl ml-0.5 font-light">|</span>
         </motion.div>
 
         <motion.p
-          className="text-text-secondary max-w-lg mx-auto mb-10 text-base leading-relaxed"
+          className="text-text-secondary max-w-lg mx-auto mb-10 text-sm sm:text-base leading-relaxed px-2"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 2.4 }}
@@ -240,7 +258,7 @@ export default function Hero() {
         </motion.p>
 
         <motion.div
-          className="flex gap-4 justify-center flex-wrap"
+          className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-stretch sm:items-center sm:flex-wrap max-w-xs sm:max-w-none mx-auto"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 2.6 }}
@@ -248,7 +266,7 @@ export default function Hero() {
           <MagneticButton strength={0.25}>
             <a
               href="#projects"
-              className="group relative px-7 py-3 border border-accent/40 text-accent rounded-lg font-medium text-sm tracking-wide hover:bg-accent hover:text-primary transition-all duration-300 overflow-hidden inline-block"
+              className="group relative px-7 py-3 min-h-[48px] flex items-center justify-center border border-accent/40 text-accent rounded-lg font-medium text-sm tracking-wide hover:bg-accent hover:text-primary transition-all duration-300 overflow-hidden inline-block"
             >
               <span className="relative z-10">
                 View Work
@@ -260,7 +278,7 @@ export default function Hero() {
           <MagneticButton strength={0.25}>
             <a
               href="#contact"
-              className="group relative px-7 py-3 border border-white/10 text-text-secondary rounded-lg font-medium text-sm tracking-wide hover:border-accent-purple hover:text-accent-purple transition-all duration-300 overflow-hidden inline-block"
+              className="group relative px-7 py-3 min-h-[48px] flex items-center justify-center border border-white/10 text-text-secondary rounded-lg font-medium text-sm tracking-wide hover:border-accent-purple hover:text-accent-purple transition-all duration-300 overflow-hidden inline-block"
             >
               <span className="relative z-10">Contact</span>
               <span className="absolute inset-0 bg-accent-purple/10 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-400 ease-out" />

@@ -58,7 +58,7 @@ export default function Contact() {
   }
 
   return (
-    <section id="contact" className="w-full py-24 px-6 bg-secondary/50">
+    <section id="contact" className="w-full py-16 md:py-24 px-4 sm:px-6 lg:px-8 bg-secondary/50">
       <div className="max-w-xl mx-auto">
         <div className="text-center mb-12">
           <motion.span
@@ -71,7 +71,7 @@ export default function Contact() {
             06
           </motion.span>
           <motion.h2
-            className="font-heading text-3xl font-bold text-text-primary mt-2 mb-3"
+            className="font-heading text-2xl sm:text-3xl font-bold text-text-primary mt-2 mb-3"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -116,7 +116,7 @@ export default function Contact() {
                 required
                 value={form[field.key]}
                 onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
-                className="w-full px-4 py-3.5 bg-card-solid border border-white/[0.06] rounded-lg text-text-primary text-sm placeholder:text-text-secondary/40 focus:outline-none focus:border-accent/30 transition-all duration-300"
+                className="w-full px-4 py-3.5 min-h-[48px] bg-card-solid border border-white/[0.06] rounded-lg text-text-primary text-base md:text-sm placeholder:text-text-secondary/40 focus:outline-none focus:border-accent/30 transition-all duration-300"
               />
               <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-gradient-to-r from-accent to-accent-purple group-focus-within:w-full transition-all duration-500 rounded-b-lg" />
             </motion.div>
@@ -134,7 +134,7 @@ export default function Contact() {
               rows={5}
               value={form.message}
               onChange={(e) => setForm({ ...form, message: e.target.value })}
-              className="w-full px-4 py-3.5 bg-card-solid border border-white/[0.06] rounded-lg text-text-primary text-sm placeholder:text-text-secondary/40 focus:outline-none focus:border-accent/30 transition-all duration-300 resize-none"
+              className="w-full px-4 py-3.5 min-h-[48px] bg-card-solid border border-white/[0.06] rounded-lg text-text-primary text-base md:text-sm placeholder:text-text-secondary/40 focus:outline-none focus:border-accent/30 transition-all duration-300 resize-none"
             />
             <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-gradient-to-r from-accent to-accent-purple group-focus-within:w-full transition-all duration-500 rounded-b-lg" />
           </motion.div>
@@ -143,7 +143,7 @@ export default function Contact() {
             <RippleButton
               type="submit"
               disabled={status === 'sending'}
-              className="w-full py-3.5 bg-accent text-primary font-semibold text-sm rounded-lg hover:shadow-[0_0_30px_rgba(0,255,136,0.2)] transition-all duration-300 disabled:opacity-50 tracking-wide"
+              className="w-full py-3.5 min-h-[48px] bg-accent text-primary font-semibold text-sm rounded-lg touch-manipulation hover:shadow-[0_0_30px_rgba(0,255,136,0.2)] transition-all duration-300 disabled:opacity-50 tracking-wide"
             >
               {status === 'sending' ? (
                 <span className="flex items-center justify-center gap-2">

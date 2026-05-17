@@ -37,6 +37,8 @@ export default function SceneIndicator() {
 
   const current = scenes[active]
 
+  if (typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches) return null
+
   return (
     <div className="hidden lg:flex fixed top-1/2 right-6 -translate-y-1/2 z-40 flex-col items-end gap-3 pointer-events-none select-none">
       <AnimatePresence mode="wait">

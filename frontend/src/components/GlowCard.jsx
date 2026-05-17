@@ -1,8 +1,14 @@
 import { useRef, useState } from 'react'
+import { useIsMobile } from '../hooks/useIsMobile'
 
 export default function GlowCard({ children, className = '', glowColor = 'rgba(0, 255, 136, 0.15)' }) {
+  const isMobile = useIsMobile()
   const ref = useRef(null)
   const [glow, setGlow] = useState({ x: 50, y: 50, opacity: 0 })
+
+  if (isMobile) {
+    return <div className={`relative ${className}`}>{children}</div>
+  }
 
   const handleMouseMove = (e) => {
     const rect = ref.current.getBoundingClientRect()

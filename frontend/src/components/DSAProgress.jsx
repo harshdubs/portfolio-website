@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion'
 import SectionHeading from './SectionHeading'
 import GlowCard from './GlowCard'
+import { useIsMobile } from '../hooks/useIsMobile'
 
 const achievements = [
   {
@@ -60,31 +61,29 @@ const rarityStyle = {
 
 function AchievementCard({ item, i }) {
   const reduce = useReducedMotion()
+  const isMobile = useIsMobile()
   const e = entrances[i % entrances.length]
 
   return (
     <motion.div
       className="relative"
-      style={{ perspective: '1200px' }}
+      style={isMobile ? undefined : { perspective: '1200px' }}
       initial={
-        reduce
-          ? { opacity: 0 }
+        reduce || isMobile
+          ? { opacity: 0, y: 12 }
           : { opacity: 0, x: e.x, y: e.y, rotate: e.rot, scale: 0.85, filter: 'blur(8px)' }
       }
-      whileInView={{ opacity: 1, x: 0, y: 0, rotate: 0, scale: 1, filter: 'blur(0px)' }}
+      whileInView={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, x: 0, y: 0, rotate: 0, scale: 1, filter: 'blur(0px)' }}
       viewport={{ once: true, margin: '-10%' }}
-      transition={{
-        type: 'spring',
-        stiffness: 70,
-        damping: 16,
-        mass: 0.9,
-        delay: i * 0.06,
-      }}
+      transition={isMobile
+        ? { duration: 0.3, delay: i * 0.04 }
+        : { type: 'spring', stiffness: 70, damping: 16, mass: 0.9, delay: i * 0.06 }
+      }
     >
       <GlowCard className="rounded-xl h-full">
         <motion.div
-          className="rounded-xl p-5 border border-white/[0.06] bg-card-solid/40 backdrop-blur-sm h-full group relative overflow-hidden"
-          whileHover={reduce ? {} : {
+          className={`rounded-xl p-5 border border-white/[0.06] h-full group relative overflow-hidden ${isMobile ? 'bg-card-solid' : 'bg-card-solid/40 backdrop-blur-sm'}`}
+          whileHover={reduce || isMobile ? {} : {
             y: -6,
             rotateX: 4,
             rotateY: i % 2 === 0 ? -3 : 3,
@@ -102,29 +101,35 @@ function AchievementCard({ item, i }) {
             {item.rarity}
           </div>
 
-          {/* "UNLOCKED" flash on enter */}
-          <motion.div
-            className="absolute inset-0 pointer-events-none flex items-center justify-center font-mono text-[11px] tracking-[0.5em] uppercase text-accent/80 z-20"
-            initial={{ opacity: 0, scale: 1.4 }}
-            whileInView={{ opacity: [0, 1, 1, 0], scale: [1.4, 1, 1, 0.95] }}
-            viewport={{ once: true }}
-            transition={{ duration: 1.4, delay: i * 0.06 + 0.4, times: [0, 0.2, 0.7, 1] }}
-          >
-            <span className="px-3 py-1 bg-black/70 border border-accent/40 rounded">
-              ✓ Unlocked
-            </span>
-          </motion.div>
+          {/* "UNLOCKED" flash on enter — desktop only */}
+          {!isMobile && (
+            <motion.div
+              className="absolute inset-0 pointer-events-none flex items-center justify-center font-mono text-[11px] tracking-[0.5em] uppercase text-accent/80 z-20"
+              initial={{ opacity: 0, scale: 1.4 }}
+              whileInView={{ opacity: [0, 1, 1, 0], scale: [1.4, 1, 1, 0.95] }}
+              viewport={{ once: true }}
+              transition={{ duration: 1.4, delay: i * 0.06 + 0.4, times: [0, 0.2, 0.7, 1] }}
+            >
+              <span className="px-3 py-1 bg-black/70 border border-accent/40 rounded">
+                ✓ Unlocked
+              </span>
+            </motion.div>
+          )}
 
-          <motion.span
-            className="text-3xl mb-3 block relative z-10"
-            initial={{ scale: 0, rotate: -90 }}
-            whileInView={{ scale: 1, rotate: 0 }}
-            viewport={{ once: true }}
-            transition={{ type: 'spring', stiffness: 220, delay: i * 0.06 + 0.3 }}
-            whileHover={{ scale: 1.25, rotate: [0, -10, 10, 0], transition: { duration: 0.5 } }}
-          >
-            {item.icon}
-          </motion.span>
+          {isMobile ? (
+            <span className="text-3xl mb-3 block relative z-10">{item.icon}</span>
+          ) : (
+            <motion.span
+              className="text-3xl mb-3 block relative z-10"
+              initial={{ scale: 0, rotate: -90 }}
+              whileInView={{ scale: 1, rotate: 0 }}
+              viewport={{ once: true }}
+              transition={{ type: 'spring', stiffness: 220, delay: i * 0.06 + 0.3 }}
+              whileHover={{ scale: 1.25, rotate: [0, -10, 10, 0], transition: { duration: 0.5 } }}
+            >
+              {item.icon}
+            </motion.span>
+          )}
           <h3 className="font-heading text-text-primary font-semibold text-sm mb-2 leading-snug group-hover:text-accent transition-colors duration-300 relative z-10 mt-6">
             {item.title}
           </h3>
@@ -136,6 +141,7 @@ function AchievementCard({ item, i }) {
 }
 
 export default function DSAProgress() {
+  const isMobile = useIsMobile()
   const ref = useRef(null)
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -145,19 +151,23 @@ export default function DSAProgress() {
   const beamX = useTransform(scrollYProgress, [0, 1], ['-30%', '130%'])
 
   return (
-    <section id="achievements" ref={ref} className="relative w-full py-24 px-6 overflow-hidden">
-      {/* ambient stage lights */}
-      <motion.div
-        className="absolute top-1/3 w-[40rem] h-[40rem] rounded-full bg-amber-400/[0.04] blur-[120px] pointer-events-none -translate-y-1/2"
-        style={{ left: beamX }}
-      />
-      <div className="absolute top-1/2 left-1/4 w-72 h-72 rounded-full bg-accent/[0.03] blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/5 w-72 h-72 rounded-full bg-accent-purple/[0.03] blur-[100px] pointer-events-none" />
+    <section id="achievements" ref={ref} className="relative w-full py-16 md:py-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      {/* ambient stage lights — desktop only (huge blur radii kill mobile GPUs) */}
+      {!isMobile && (
+        <>
+          <motion.div
+            className="absolute top-1/3 w-[40rem] h-[40rem] rounded-full bg-amber-400/[0.04] blur-[120px] pointer-events-none -translate-y-1/2"
+            style={{ left: beamX }}
+          />
+          <div className="absolute top-1/2 left-1/4 w-72 h-72 rounded-full bg-accent/[0.03] blur-[100px] pointer-events-none" />
+          <div className="absolute bottom-1/4 right-1/5 w-72 h-72 rounded-full bg-accent-purple/[0.03] blur-[100px] pointer-events-none" />
+        </>
+      )}
 
       <div className="relative max-w-5xl mx-auto">
         <SectionHeading number="05" title="Achievements" />
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           {achievements.map((item, i) => (
             <AchievementCard key={item.title} item={item} i={i} />
           ))}

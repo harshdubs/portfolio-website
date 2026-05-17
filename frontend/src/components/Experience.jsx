@@ -2,6 +2,7 @@ import { motion, useScroll, useTransform } from 'framer-motion'
 import { useRef } from 'react'
 import SectionHeading from './SectionHeading'
 import GlowCard from './GlowCard'
+import { useIsMobile } from '../hooks/useIsMobile'
 
 const timeline = [
   {
@@ -77,6 +78,7 @@ function BulletItem({ bullet, index }) {
 }
 
 function InternationalCard({ item, index }) {
+  const isMobile = useIsMobile()
   return (
     <GlowCard className="rounded-xl" glowColor="rgba(124,58,237,0.12)">
       <motion.div
@@ -88,13 +90,17 @@ function InternationalCard({ item, index }) {
 
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 mb-2 relative z-10">
           <div className="flex items-center gap-2">
-            <motion.span
-              className="text-lg"
-              animate={{ rotate: [0, -5, 5, 0] }}
-              transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-            >
-              {item.flag}
-            </motion.span>
+            {isMobile ? (
+              <span className="text-lg">{item.flag}</span>
+            ) : (
+              <motion.span
+                className="text-lg"
+                animate={{ rotate: [0, -5, 5, 0] }}
+                transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+              >
+                {item.flag}
+              </motion.span>
+            )}
             <div>
               <h3 className="font-heading text-text-primary font-semibold text-[15px]">{item.title}</h3>
               <p className="text-accent-purple text-xs font-medium">{item.org}</p>
@@ -109,6 +115,7 @@ function InternationalCard({ item, index }) {
 }
 
 export default function Experience() {
+  const isMobile = useIsMobile()
   const containerRef = useRef(null)
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -117,19 +124,26 @@ export default function Experience() {
   const lineHeight = useTransform(scrollYProgress, [0, 1], ['0%', '100%'])
 
   return (
-    <section id="experience" className="w-full py-24 px-6 bg-secondary/50">
+    <section id="experience" className="w-full py-16 md:py-24 px-4 sm:px-6 lg:px-8 bg-secondary/50">
       <div className="max-w-5xl mx-auto">
         <SectionHeading number="04" title="Experience" />
 
         <div ref={containerRef} className="relative">
           <div className="absolute left-[7px] top-2 bottom-2 w-px bg-white/[0.06] md:left-[11px]" />
-          <motion.div
-            className="absolute left-[7px] top-2 w-px md:left-[11px]"
-            style={{
-              height: lineHeight,
-              background: 'linear-gradient(180deg, #00ff88 0%, #7c3aed 100%)',
-            }}
-          />
+          {isMobile ? (
+            <div
+              className="absolute left-[7px] top-2 bottom-2 w-px md:left-[11px]"
+              style={{ background: 'linear-gradient(180deg, #00ff88 0%, #7c3aed 100%)' }}
+            />
+          ) : (
+            <motion.div
+              className="absolute left-[7px] top-2 w-px md:left-[11px]"
+              style={{
+                height: lineHeight,
+                background: 'linear-gradient(180deg, #00ff88 0%, #7c3aed 100%)',
+              }}
+            />
+          )}
 
           <div className="space-y-10">
             {timeline.map((item, i) => (
@@ -156,14 +170,16 @@ export default function Experience() {
                     viewport={{ once: true }}
                     transition={{ type: 'spring', stiffness: 300, delay: i * 0.1 + 0.2 }}
                   />
-                  {/* Pulse ring */}
-                  <motion.div
-                    className={`absolute inset-0 rounded-full border ${
-                      item.type === 'role' ? 'border-accent/30' : item.type === 'highlight' ? 'border-amber-400/30' : 'border-accent-purple/30'
-                    }`}
-                    animate={{ scale: [1, 2], opacity: [0.5, 0] }}
-                    transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
-                  />
+                  {/* Pulse ring — desktop only (infinite anims tank mobile) */}
+                  {!isMobile && (
+                    <motion.div
+                      className={`absolute inset-0 rounded-full border ${
+                        item.type === 'role' ? 'border-accent/30' : item.type === 'highlight' ? 'border-amber-400/30' : 'border-accent-purple/30'
+                      }`}
+                      animate={{ scale: [1, 2], opacity: [0.5, 0] }}
+                      transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
+                    />
+                  )}
                 </div>
 
                 {item.type === 'role' ? (

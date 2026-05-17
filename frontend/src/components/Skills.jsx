@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useScroll, useTransform, useMotionValue, useSpring, useInView } from 'framer-motion'
 import SectionHeading from './SectionHeading'
+import { useIsMobile } from '../hooks/useIsMobile'
 
 const skillGroups = [
   {
@@ -49,6 +50,7 @@ const skillGroups = [
 
 /* ---- Boot-up terminal banner with live counter ---- */
 function BootBanner({ totalSkills, totalGroups }) {
+  const isMobile = useIsMobile()
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-20%' })
   const [skillCount, setSkillCount] = useState(0)
@@ -77,7 +79,7 @@ function BootBanner({ totalSkills, totalGroups }) {
   return (
     <motion.div
       ref={ref}
-      className="relative mb-10 rounded-xl border border-white/[0.08] bg-black/40 backdrop-blur-md overflow-hidden"
+      className={`relative mb-10 rounded-xl border border-white/[0.08] overflow-hidden ${isMobile ? 'bg-black/80' : 'bg-black/40 backdrop-blur-md'}`}
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-20%' }}
@@ -117,7 +119,24 @@ function BootBanner({ totalSkills, totalGroups }) {
 }
 
 /* ---- Skill chip with proficiency line ---- */
-function SkillChip({ skill, accent, gi, si }) {
+function SkillChip({ skill, accent, gi, si, isMobile }) {
+  if (isMobile) {
+    return (
+      <motion.span
+        className="relative inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-[13px] font-medium border border-white/[0.06] text-text-secondary bg-primary/40 cursor-default"
+        initial={{ opacity: 0, y: 8 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-10%' }}
+        transition={{ duration: 0.25, delay: gi * 0.03 }}
+      >
+        <span
+          className="w-1 h-1 rounded-full opacity-60"
+          style={{ background: accent }}
+        />
+        <span className="relative z-10">{skill}</span>
+      </motion.span>
+    )
+  }
   return (
     <motion.span
       className="relative inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-[13px] font-medium border border-white/[0.06] text-text-secondary bg-primary/40 cursor-default overflow-hidden group/chip"
@@ -156,8 +175,84 @@ function SkillChip({ skill, accent, gi, si }) {
   )
 }
 
-/* ---- Category card with mouse-follow glow + 3D tilt ---- */
-function CategoryCard({ group, gi }) {
+/* ---- Category card — MOBILE: static, no springs, no tilt ---- */
+function CategoryCardMobile({ group, gi }) {
+  return (
+    <motion.div
+      className="relative"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-12%' }}
+      transition={{ duration: 0.35, delay: gi * 0.04 }}
+    >
+      <div className="relative rounded-xl p-6 h-full border border-white/[0.06] bg-card-solid/80 overflow-hidden">
+        {/* corner brackets static */}
+        {['top-2 left-2 border-t border-l', 'top-2 right-2 border-t border-r', 'bottom-2 left-2 border-b border-l', 'bottom-2 right-2 border-b border-r'].map((c) => (
+          <span
+            key={c}
+            className={`absolute w-4 h-4 ${c} opacity-30`}
+            style={{ borderColor: group.accent }}
+          />
+        ))}
+
+        {/* HEADER */}
+        <div className="relative z-10 flex items-start gap-3 mb-5">
+          <div
+            className="relative w-11 h-11 shrink-0 flex items-center justify-center rounded-lg border bg-black/40"
+            style={{ borderColor: `${group.accent}33`, color: group.accent }}
+          >
+            <span className="text-xl">{group.icon}</span>
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-[11px] tracking-[0.3em] uppercase" style={{ color: group.accent }}>
+                {group.code}·{String(gi + 1).padStart(2, '0')}
+              </span>
+              <span
+                className="flex-1 h-px"
+                style={{ background: `linear-gradient(90deg, ${group.accent}99, transparent)` }}
+              />
+              <span className="font-mono text-[12px] text-text-secondary/60">
+                {String(group.skills.length).padStart(2, '0')}
+              </span>
+            </div>
+            <h3 className="font-heading text-text-primary font-semibold text-[17px] tracking-tight leading-tight mt-1">
+              {group.title}
+            </h3>
+          </div>
+        </div>
+
+        {/* SKILLS */}
+        <div className="relative z-10 flex flex-wrap gap-2">
+          {group.skills.map((skill, si) => (
+            <SkillChip key={skill} skill={skill} accent={group.accent} gi={gi} si={si} isMobile />
+          ))}
+        </div>
+
+        {/* bottom signal bars — plain divs with inline width */}
+        <div className="relative z-10 flex items-end gap-0.5 mt-5 h-3">
+          {Array.from({ length: 18 }).map((_, i) => {
+            const h = 30 + ((i * 137 + gi * 53) % 70)
+            return (
+              <span
+                key={i}
+                className="block w-0.5 rounded-sm"
+                style={{
+                  background: group.accent,
+                  opacity: 0.18 + (i / 18) * 0.5,
+                  height: `${h}%`,
+                }}
+              />
+            )
+          })}
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
+/* ---- Category card with mouse-follow glow + 3D tilt (desktop) ---- */
+function CategoryCardDesktop({ group, gi }) {
   const ref = useRef(null)
   const mx = useMotionValue(0.5)
   const my = useMotionValue(0.5)
@@ -273,7 +368,7 @@ function CategoryCard({ group, gi }) {
         {/* SKILLS */}
         <div className="relative z-10 flex flex-wrap gap-2" style={{ transform: 'translateZ(20px)' }}>
           {group.skills.map((skill, si) => (
-            <SkillChip key={skill} skill={skill} accent={group.accent} gi={gi} si={si} />
+            <SkillChip key={skill} skill={skill} accent={group.accent} gi={gi} si={si} isMobile={false} />
           ))}
         </div>
 
@@ -299,6 +394,10 @@ function CategoryCard({ group, gi }) {
   )
 }
 
+function CategoryCard({ group, gi, isMobile }) {
+  return isMobile ? <CategoryCardMobile group={group} gi={gi} /> : <CategoryCardDesktop group={group} gi={gi} />
+}
+
 /* ---- Marquee skills ticker at bottom ---- */
 function SkillTicker({ skills }) {
   return (
@@ -320,10 +419,11 @@ function SkillTicker({ skills }) {
 }
 
 export default function Skills() {
+  const isMobile = useIsMobile()
   const sectionRef = useRef(null)
   const totalSkills = skillGroups.reduce((s, g) => s + g.skills.length, 0)
 
-  // Background grid that subtly pans with scroll
+  // Background grid that subtly pans with scroll (desktop only)
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ['start end', 'end start'],
@@ -333,33 +433,47 @@ export default function Skills() {
   const allSkills = skillGroups.flatMap((g) => g.skills)
 
   return (
-    <section ref={sectionRef} id="skills" className="relative w-full py-24 px-6 bg-secondary/50 overflow-hidden">
-      {/* animated background grid */}
-      <motion.div
-        className="absolute inset-0 pointer-events-none opacity-[0.04]"
-        style={{
-          backgroundImage: `linear-gradient(rgba(0,255,136,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,136,0.5) 1px, transparent 1px)`,
-          backgroundSize: '50px 50px',
-          backgroundPosition: gridY,
-          y: gridY,
-        }}
-      />
-      {/* ambient blobs */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full bg-accent/[0.04] blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 rounded-full bg-accent-purple/[0.04] blur-[120px] pointer-events-none" />
+    <section ref={sectionRef} id="skills" className="relative w-full py-16 md:py-24 px-4 sm:px-6 lg:px-8 bg-secondary/50 overflow-hidden">
+      {/* animated background grid — static on mobile */}
+      {isMobile ? (
+        <div
+          className="absolute inset-0 pointer-events-none opacity-[0.04]"
+          style={{
+            backgroundImage: `linear-gradient(rgba(0,255,136,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,136,0.5) 1px, transparent 1px)`,
+            backgroundSize: '50px 50px',
+          }}
+        />
+      ) : (
+        <motion.div
+          className="absolute inset-0 pointer-events-none opacity-[0.04]"
+          style={{
+            backgroundImage: `linear-gradient(rgba(0,255,136,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,136,0.5) 1px, transparent 1px)`,
+            backgroundSize: '50px 50px',
+            backgroundPosition: gridY,
+            y: gridY,
+          }}
+        />
+      )}
+      {/* ambient blobs — skip on mobile */}
+      {!isMobile && (
+        <>
+          <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full bg-accent/[0.04] blur-[120px] pointer-events-none" />
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 rounded-full bg-accent-purple/[0.04] blur-[120px] pointer-events-none" />
+        </>
+      )}
 
       <div className="relative max-w-6xl mx-auto">
         <SectionHeading number="02" title="Skills" />
 
         <BootBanner totalSkills={totalSkills} totalGroups={skillGroups.length} />
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           {skillGroups.map((group, gi) => (
-            <CategoryCard key={group.title} group={group} gi={gi} />
+            <CategoryCard key={group.title} group={group} gi={gi} isMobile={isMobile} />
           ))}
         </div>
 
-        <SkillTicker skills={allSkills} />
+        {!isMobile && <SkillTicker skills={allSkills} />}
       </div>
     </section>
   )
